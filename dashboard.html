@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Kas Kuliah — Dasbor</title>
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0d2c28" />
+<link rel="icon" href="icons/favicon-32.png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Kas Kuliah" />
+
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="app-shell" id="app-shell">
+
+  <nav class="sidebar" id="sidebar">
+    <div class="brand-mark"><span class="dot"></span> Kas Kuliah</div>
+
+    <button class="nav-item is-active" data-view="dashboard"><span class="ic">#</span> Dasbor</button>
+    <button class="nav-item" data-view="income"><span class="ic">+</span> Catat Pemasukan</button>
+    <button class="nav-item" data-view="expense"><span class="ic">-</span> Catat Pengeluaran</button>
+    <button class="nav-item" data-view="goal"><span class="ic">$</span> Target Tabungan</button>
+    <button class="nav-item" data-view="charts"><span class="ic">~</span> Grafik Keuangan</button>
+    <button class="nav-item" data-view="report"><span class="ic">=</span> Laporan Bulanan</button>
+    <button class="nav-item" data-view="notice"><span class="ic">!</span> Notifikasi<span class="badge-dot" id="notice-dot" style="display:none"></span></button>
+
+    <div class="sidebar-foot">
+      <div class="user-chip">
+        <div class="avatar" id="user-avatar">?</div>
+        <div>
+          <div class="name" id="user-name">—</div>
+          <div class="email" id="user-email">—</div>
+        </div>
+      </div>
+      <button class="logout-btn" id="btn-logout">Keluar</button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="page-title">Dasbor</h1>
+        <p class="date-note" id="page-date"></p>
+      </div>
+      <button class="mobile-nav-toggle" id="nav-toggle">Menu</button>
+    </div>
+
+    <!-- ================= DASHBOARD ================= -->
+    <section class="view is-active" id="view-dashboard">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="label">Total Saldo</div>
+          <div class="value" id="stat-balance">Rp0</div>
+        </div>
+        <div class="stat-card income">
+          <div class="label">Total Pemasukan</div>
+          <div class="value" id="stat-income">Rp0</div>
+        </div>
+        <div class="stat-card expense">
+          <div class="label">Total Pengeluaran</div>
+          <div class="value" id="stat-expense">Rp0</div>
+        </div>
+        <div class="stat-card goal">
+          <div class="label">Target Tabungan</div>
+          <div class="value" id="stat-goal-pct">0%</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Target tabungan berjalan</h3>
+          <p class="card-sub" id="dash-goal-name">Belum ada target dipasang</p>
+          <div class="progress-track"><div class="progress-fill" id="dash-goal-fill" style="width:0%"></div></div>
+          <p class="card-sub" style="margin-top:10px" id="dash-goal-detail"></p>
+        </div>
+        <div class="card">
+          <h3>Pemasukan vs pengeluaran bulan ini</h3>
+          <p class="card-sub">Perbandingan singkat bulan berjalan</p>
+          <div class="chart-wrap" style="height:190px"><canvas id="chart-mini"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Transaksi terbaru</h3>
+        <p class="card-sub">5 catatan terakhir</p>
+        <div class="receipt-list" id="dash-recent"></div>
+      </div>
+    </section>
+
+    <!-- ================= PEMASUKAN ================= -->
+    <section class="view" id="view-income">
+      <div class="card">
+        <h3>Catat pemasukan</h3>
+        <p class="card-sub">Isi rincian uang yang masuk</p>
+        <form id="form-income" class="form-grid">
+          <div class="field">
+            <label>Nominal (Rp)</label>
+            <input type="number" min="0" id="income-amount" required placeholder="500000" />
+          </div>
+          <div class="field">
+            <label>Tanggal</label>
+            <input type="date" id="income-date" required />
+          </div>
+          <div class="field">
+            <label>Kategori</label>
+            <select id="income-category">
+              <option>Gaji</option>
+              <option>Uang saku</option>
+              <option>Beasiswa</option>
+              <option>Bonus</option>
+              <option>Lainnya</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Keterangan</label>
+            <input type="text" id="income-note" placeholder="Contoh: kiriman orang tua" />
+          </div>
+          <div class="field field-full">
+            <button type="submit" class="btn-secondary">Simpan pemasukan</button>
+          </div>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Riwayat pemasukan</h3>
+        <div class="receipt-list" id="income-list"></div>
+      </div>
+    </section>
+
+    <!-- ================= PENGELUARAN ================= -->
+    <section class="view" id="view-expense">
+      <div class="card">
+        <h3>Catat pengeluaran</h3>
+        <p class="card-sub">Isi rincian uang yang keluar</p>
+        <form id="form-expense" class="form-grid">
+          <div class="field">
+            <label>Nominal (Rp)</label>
+            <input type="number" min="0" id="expense-amount" required placeholder="25000" />
+          </div>
+          <div class="field">
+            <label>Tanggal</label>
+            <input type="date" id="expense-date" required />
+          </div>
+          <div class="field">
+            <label>Kategori</label>
+            <select id="expense-category">
+              <option>Makan</option>
+              <option>Transportasi</option>
+              <option>Pulsa</option>
+              <option>Internet</option>
+              <option>Belanja</option>
+              <option>Hiburan</option>
+              <option>Pendidikan</option>
+              <option>Lainnya</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Keterangan</label>
+            <input type="text" id="expense-note" placeholder="Contoh: makan siang" />
+          </div>
+          <div class="field field-full">
+            <button type="submit" class="btn-secondary">Simpan pengeluaran</button>
+          </div>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Riwayat pengeluaran</h3>
+        <div class="receipt-list" id="expense-list"></div>
+      </div>
+    </section>
+
+    <!-- ================= TARGET TABUNGAN ================= -->
+    <section class="view" id="view-goal">
+      <div class="card">
+        <h3>Atur target tabungan</h3>
+        <p class="card-sub">Contoh: Laptop Rp8.000.000</p>
+        <form id="form-goal" class="form-grid">
+          <div class="field">
+            <label>Nama target</label>
+            <input type="text" id="goal-name" required placeholder="Contoh: Laptop" />
+          </div>
+          <div class="field">
+            <label>Jumlah target (Rp)</label>
+            <input type="number" min="0" id="goal-target" required placeholder="8000000" />
+          </div>
+          <div class="field">
+            <label>Sudah terkumpul saat ini (Rp)</label>
+            <input type="number" min="0" id="goal-current" placeholder="2500000" />
+          </div>
+          <div class="field field-full">
+            <button type="submit" class="btn-secondary">Simpan target</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card" id="goal-progress-card" style="display:none">
+        <h3 id="goal-title">Target</h3>
+        <p class="card-sub" id="goal-sub"></p>
+        <div class="progress-track"><div class="progress-fill" id="goal-fill" style="width:0%"></div></div>
+        <p class="card-sub" style="margin-top:10px" id="goal-pct-label"></p>
+
+        <div class="form-grid" style="margin-top:18px">
+          <div class="field">
+            <label>Tambah tabungan (Rp)</label>
+            <input type="number" min="0" id="goal-add-amount" placeholder="100000" />
+          </div>
+          <div class="field" style="display:flex; align-items:flex-end">
+            <button type="button" class="btn-secondary" id="btn-goal-add" style="width:100%">Tambahkan ke tabungan</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= GRAFIK ================= -->
+    <section class="view" id="view-charts">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Pemasukan per bulan</h3>
+          <div class="chart-wrap"><canvas id="chart-income-month"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Pengeluaran per bulan</h3>
+          <div class="chart-wrap"><canvas id="chart-expense-month"></canvas></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Perbandingan pemasukan &amp; pengeluaran</h3>
+          <div class="chart-wrap"><canvas id="chart-compare"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Persentase pengeluaran per kategori</h3>
+          <div class="chart-wrap"><canvas id="chart-category"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Perkembangan saldo</h3>
+        <p class="card-sub">Saldo kumulatif dari bulan ke bulan</p>
+        <div class="chart-wrap"><canvas id="chart-balance-trend"></canvas></div>
+      </div>
+    </section>
+
+    <!-- ================= LAPORAN ================= -->
+    <section class="view" id="view-report">
+      <div class="card">
+        <h3>Laporan bulanan</h3>
+        <p class="card-sub">Pilih bulan untuk melihat ringkasan</p>
+        <div class="report-select">
+          <div class="field">
+            <label>Bulan &amp; tahun</label>
+            <input type="month" id="report-month" />
+          </div>
+          <button class="btn-ghost" id="btn-report-view">Tampilkan</button>
+          <button class="btn-secondary" id="btn-report-pdf">Unduh PDF</button>
+        </div>
+
+        <div class="report-sheet" id="report-sheet">
+          <p style="font-family:var(--font-ui); font-weight:700; margin-top:0" id="report-title">Pilih bulan terlebih dahulu</p>
+          <div class="r-row"><span>Pemasukan</span><span id="r-income">Rp0</span></div>
+          <div class="r-row"><span>Pengeluaran</span><span id="r-expense">Rp0</span></div>
+          <div class="r-row total"><span>Sisa</span><span id="r-remaining">Rp0</span></div>
+          <div class="r-row"><span>Persentase menabung</span><span id="r-percent">0%</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= NOTIFIKASI ================= -->
+    <section class="view" id="view-notice">
+      <div class="card">
+        <h3>Notifikasi</h3>
+        <p class="card-sub">Pengingat otomatis berdasarkan aktivitas pencatatanmu</p>
+        <div class="notice-list" id="notice-list"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js").catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>

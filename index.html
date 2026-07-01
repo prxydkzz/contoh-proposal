@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Kas Kuliah — Masuk</title>
+
+<!-- Pengaturan agar bisa di-install sebagai aplikasi (PWA) -->
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0d2c28" />
+<link rel="icon" href="icons/favicon-32.png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Kas Kuliah" />
+
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="auth-shell">
+
+  <!-- sisi kiri: penjelasan produk -->
+  <aside class="auth-hero">
+    <div class="brand-mark"><span class="dot"></span> Kas Kuliah</div>
+
+    <div class="hero-copy">
+      <h1>Catat uang masuk &amp; keluar, tanpa buku catatan yang gampang hilang.</h1>
+      <p>
+        Dibuat untuk anak kos dan mahasiswa yang bosan lupa ke mana uang bulanan
+        habis. Tulis tiap transaksi seperti nota belanja, lalu lihat sendiri polanya.
+      </p>
+    </div>
+
+    <div class="hero-receipt">
+      <div class="row"><span>Uang saku masuk</span><span>Rp1.500.000</span></div>
+      <div class="row"><span>Makan &amp; jajan</span><span>-Rp620.000</span></div>
+      <div class="row"><span>Kos &amp; internet</span><span>-Rp450.000</span></div>
+      <div class="row total"><span>Sisa bulan ini</span><span>Rp430.000</span></div>
+    </div>
+  </aside>
+
+  <!-- sisi kanan: form -->
+  <section class="auth-form-side">
+    <div class="auth-card">
+      <div class="mobile-brand"><span class="dot"></span> Kas Kuliah</div>
+
+      <div class="tab-row">
+        <button class="tab-btn is-active" data-tab="login">Masuk</button>
+        <button class="tab-btn" data-tab="register">Daftar</button>
+        <button class="tab-btn" data-tab="forgot">Lupa Sandi</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="auth-panel is-active" id="panel-login">
+        <h2>Masuk ke akunmu</h2>
+        <p class="sub">Lanjutkan catatan keuanganmu dari terakhir kali.</p>
+        <div class="alert"></div>
+        <form id="form-login">
+          <div class="field">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" required placeholder="nama@kampus.ac.id" />
+          </div>
+          <div class="field">
+            <label for="login-password">Kata sandi</label>
+            <input type="password" id="login-password" required placeholder="Minimal 6 karakter" />
+          </div>
+          <button type="submit" class="btn-primary">Masuk</button>
+        </form>
+        <p class="foot-note">Belum punya akun? <button class="link-btn" data-tab="register" onclick="showTab('register')">Daftar dulu</button></p>
+      </div>
+
+      <!-- DAFTAR -->
+      <div class="auth-panel" id="panel-register">
+        <h2>Buat akun baru</h2>
+        <p class="sub">Gratis, data tersimpan langsung di perangkatmu.</p>
+        <div class="alert"></div>
+        <form id="form-register">
+          <div class="field">
+            <label for="reg-name">Nama lengkap</label>
+            <input type="text" id="reg-name" required placeholder="Contoh: Salsabila Putri" />
+          </div>
+          <div class="field">
+            <label for="reg-email">Email</label>
+            <input type="email" id="reg-email" required placeholder="nama@kampus.ac.id" />
+          </div>
+          <div class="field">
+            <label for="reg-password">Kata sandi</label>
+            <input type="password" id="reg-password" required placeholder="Minimal 6 karakter" />
+          </div>
+          <div class="field">
+            <label for="reg-confirm">Ulangi kata sandi</label>
+            <input type="password" id="reg-confirm" required />
+          </div>
+          <button type="submit" class="btn-primary">Daftar</button>
+        </form>
+        <p class="foot-note">Sudah punya akun? <button class="link-btn" onclick="showTab('login')">Masuk</button></p>
+      </div>
+
+      <!-- LUPA PASSWORD -->
+      <div class="auth-panel" id="panel-forgot">
+        <h2>Atur ulang kata sandi</h2>
+        <p class="sub">Masukkan email terdaftar dan kata sandi barumu.</p>
+        <div class="alert"></div>
+        <form id="form-forgot">
+          <div class="field">
+            <label for="forgot-email">Email terdaftar</label>
+            <input type="email" id="forgot-email" required placeholder="nama@kampus.ac.id" />
+          </div>
+          <div class="field">
+            <label for="forgot-new">Kata sandi baru</label>
+            <input type="password" id="forgot-new" required placeholder="Minimal 6 karakter" />
+          </div>
+          <button type="submit" class="btn-primary">Simpan kata sandi baru</button>
+        </form>
+        <p class="foot-note"><button class="link-btn" onclick="showTab('login')">Kembali ke halaman masuk</button></p>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js").catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
